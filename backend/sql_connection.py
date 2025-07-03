@@ -14,15 +14,20 @@ def get_sql_connection():
         load_dotenv()
         
         # Retrieve database credentials from environment variables
+        db_host = os.getenv("DB_HOST", "localhost")  # Default to localhost if not set
         db_user = os.getenv("DB_USER")
         db_password = os.getenv("DB_PASSWORD")
         db_name = os.getenv("DB_NAME")
         
-        # Connect to the database
-        __cnx = mysql.connector.connect(
-            user=db_user,
-            password=db_password,
-            database=db_name
-        )
+        try:
+            __cnx = mysql.connector.connect(
+                host=db_host,
+                user=db_user,
+                password=db_password,
+                database=db_name
+            )
+        except mysql.connector.Error as e:
+            print(f"Error connecting to MySQL Database: {e}")
+            __cnx = None
 
     return __cnx
