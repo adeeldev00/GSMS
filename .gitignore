@@ -3,3 +3,4 @@ doc.txt
 imgs
 /backend/.env
 /backend/ca.pem
+*.pem
