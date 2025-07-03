@@ -1,12 +1,16 @@
-// Define your api here
-var productListApiUrl = 'http://127.0.0.1:5000/getProducts';
-var uomListApiUrl = 'http://127.0.0.1:5000/getUOM';
-var productSaveApiUrl = 'http://127.0.0.1:5000/insertProduct';
-var productDeleteApiUrl = 'http://127.0.0.1:5000/deleteProduct';
-var orderListApiUrl = 'http://127.0.0.1:5000/getAllOrders';
-var orderSaveApiUrl = 'http://127.0.0.1:5000/insertOrder';
+// Detect if running locally (e.g., file:// or localhost)
+const isLocal = window.location.hostname === 'localhost' || window.location.protocol === 'file:';
+const baseUrl = isLocal ? 'http://127.0.0.1:5000' : 'https://grocery-backend-v3yy.onrender.com';
 
-// For product drop in order
+// Define your APIs here
+var productListApiUrl = `${baseUrl}/getProducts`;
+var uomListApiUrl = `${baseUrl}/getUOM`;
+var productSaveApiUrl = `${baseUrl}/insertProduct`;
+var productDeleteApiUrl = `${baseUrl}/deleteProduct`;
+var orderListApiUrl = `${baseUrl}/getAllOrders`;
+var orderSaveApiUrl = `${baseUrl}/insertOrder`;
+
+// For product drop in order (external API, keep separate)
 var productsApiUrl = 'https://fakestoreapi.com/products';
 
 function callApi(method, url, data) {
@@ -16,6 +20,9 @@ function callApi(method, url, data) {
         data: data
     }).done(function( msg ) {
         window.location.reload();
+    }).fail(function(xhr, status, error) {
+        console.error('API Error:', error);
+        alert('Failed to process request. Check console for details.');
     });
 }
 
@@ -31,25 +38,24 @@ function calculateValue() {
     $("#product_grand_total").val(total.toFixed(2));
 }
 
-function orderParser(order) {
-    return {
-        id : order.id,
-        date : order.employee_name,
-        orderNo : order.employee_name,
-        customerName : order.employee_name,
-        cost : parseInt(order.employee_salary)
-    }
-}
-
 function productParser(product) {
     return {
-        id : product.id,
-        name : product.employee_name,
-        unit : product.employee_name,
-        price : product.employee_name
-    }
+        id: product.product_id,
+        name: product.name,
+        unit: product.uom_name,
+        price: product.price_per_unit
+    };
 }
 
+function orderParser(order) {
+    return {
+        id: order.order_id,
+        date: order.datatime || 'N/A',
+        orderNo: order.order_id,
+        customerName: order.customer_name || 'N/A',
+        cost: parseFloat(order.total) || 0
+    };
+}
 function productDropParser(product) {
     return {
         id : product.id,

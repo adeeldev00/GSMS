@@ -19,7 +19,8 @@
 // });
 
 $(function () {
-  var orderListApiUrl = "http://127.0.0.1:5000/getAllOrders"; // Defined URL
+  const baseUrl = isLocal ? 'http://127.0.0.1:5000' : 'https://grocery-backend-v3yy.onrender.com';
+  var orderListApiUrl = `${baseUrl}/getAllOrders`; // Defined URL
   $.get(orderListApiUrl, function (response) {
     console.log("Response:", response); // Debug the response
     if (response && response.length > 0) {
