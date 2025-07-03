@@ -1,9 +1,9 @@
 // Detect if running locally (e.g., file:// or localhost)
 const isLocal = window.location.hostname === 'localhost' || window.location.protocol === 'file:';
 const baseUrl = isLocal ? 'http://127.0.0.1:5000' : 'https://grocery-backend-v3yy.onrender.com';
-
-// Define your APIs here
+console.log('Base URL:', baseUrl); // Add this line
 var productListApiUrl = `${baseUrl}/getProducts`;
+// Define your APIs here
 var uomListApiUrl = `${baseUrl}/getUOM`;
 var productSaveApiUrl = `${baseUrl}/insertProduct`;
 var productDeleteApiUrl = `${baseUrl}/deleteProduct`;
