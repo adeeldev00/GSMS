@@ -44,6 +44,25 @@
       rel="stylesheet"
       href="css/custom.css?v=1.3.3"
     />
+    <style>
+      .modal.fade-scale {
+        display: none; /* Hidden by default */
+      }
+      .modal.fade-scale.show {
+        display: block; /* Shown when class 'show' is added */
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+      }
+      .back-button {
+        margin-right: 15px;
+        font-size: 30px;
+        color: black;
+        cursor: pointer;
+        transition: color 0.3s;
+      }
+      .back-button:hover {
+        color: #0056b3;
+      }
+    </style>
   </head>
   <body class="tooltips">
     <div class="container">
@@ -73,6 +92,9 @@
             </div>
           </div>
         </div>
+        <a href="index.html" class="back-button" title="Back to Dashboard">
+          <i class="zmdi zmdi-arrow-left zmdi-hc-fw"></i>
+        </a>
       </div>
 
       <div class="right content-page">
@@ -99,8 +121,32 @@
                   <th>Price Per Unit</th>
                   <th style="width: 150px">Action</th>
                 </thead>
-                <tbody></tbody>
+                <tbody id="productsTableBody">
+                  <tr>
+                    <td colspan="4" class="text-center">Loading products...</td>
+                  </tr>
+                </tbody>
               </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade-scale"
+        id="myModal"
+        role="dialog"
+        data-backdrop="static"
+      >
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-body text-center">
+              <img
+                src="https://demo.test.cloint.com/assets/images/spinner.gif"
+                width="40"
+                style="margin: 60px auto"
+                alt="Loading..."
+              />
             </div>
           </div>
         </div>
@@ -177,15 +223,12 @@
       </div>
       <!-- Footer Section -->
       <!-- <footer class="footer" style="background-color: transparent">
-        <div class="container">
-          <div class="text-center">
-            <p>
-              &copy; 2025 Grocery Store Management System by
-              <strong>Adeel</strong>
-            </p>
-          </div>
+      <div class="container">
+        <div class="text-center">
+          <p>© 2025 Grocery Store Management System by <strong>Adeel</strong></p>
         </div>
-      </footer> -->
+      </div>
+    </footer> -->
     </div>
     <script src="js/packages/jquery.min.js"></script>
     <script src="js/custom/common.js"></script>

@@ -48,8 +48,157 @@
       rel="stylesheet"
       href="css/custom.css?v=1.3.3"
     />
+    <style>
+      .modal.fade-scale {
+        display: none; /* Hidden by default */
+      }
+      .modal.fade-scale.show {
+        display: block; /* Shown when class 'show' is added */
+      }
+
+      /* Enhanced Database Loading Styles */
+      .database-loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .database-loading-overlay.hide {
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.5s ease;
+      }
+
+      .loading-content {
+        text-align: center;
+        color: white;
+        max-width: 400px;
+        padding: 40px;
+      }
+
+      .loading-logo {
+        font-size: 48px;
+        margin-bottom: 20px;
+        animation: pulse 2s infinite;
+      }
+
+      .loading-title {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      }
+
+      .loading-subtitle {
+        font-size: 16px;
+        margin-bottom: 40px;
+        opacity: 0.9;
+      }
+
+      .progress-container {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 25px;
+        padding: 8px;
+        margin-bottom: 20px;
+        backdrop-filter: blur(10px);
+      }
+
+      .progress-bar {
+        height: 20px;
+        background: linear-gradient(90deg, #00c851, #007e33);
+        border-radius: 20px;
+        width: 0%;
+        transition: width 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .progress-bar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        animation: shimmer 2s infinite;
+      }
+
+      .progress-text {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      }
+
+      .loading-status {
+        font-size: 14px;
+        opacity: 0.8;
+        min-height: 20px;
+      }
+
+      .loading-dots::after {
+        content: '';
+        animation: dots 1.5s infinite;
+      }
+
+      @keyframes dots {
+        0%, 20% { content: ''; }
+        40% { content: '.'; }
+        60% { content: '..'; }
+        80%, 100% { content: '...'; }
+      }
+
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+      }
+
+      @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+
+      .database-icon {
+        display: inline-block;
+        animation: rotate 3s linear infinite;
+      }
+
+      @keyframes rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
   </head>
   <body class="tooltips">
+    <!-- Database Loading Overlay -->
+    <div class="database-loading-overlay" id="databaseLoader">
+      <div class="loading-content">
+        <div class="loading-logo">
+          <i class="fas fa-database database-icon"></i>
+        </div>
+        <div class="loading-title">GSMS(Adeel)</div>
+        <div class="loading-subtitle">Grocery Store Management System</div>
+        
+        <div class="progress-text" id="progressPercentage">0%</div>
+        <div class="progress-container">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="loading-status" id="loadingStatus">
+          Initializing system<span class="loading-dots"></span>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <div class="header content rows-content-header">
         <button class="button-menu-mobile show-sidebar">
@@ -82,7 +231,6 @@
           </div>
         </div>
       </div>
-
       <div class="right content-page">
         <div class="body content rows scroll-y">
           <form class="form-horizontal" action="">
@@ -114,16 +262,15 @@
                       <th>Total Cost</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody id="ordersTableBody">
                     <tr>
-                      <td colspan="4" class="text-center">No orders found</td>
+                      <td colspan="4" class="text-center">Loading orders...</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
           </form>
-
           <div class="modal" id="userProfileModal" role="dialog">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -136,6 +283,7 @@
         </div>
       </div>
 
+      <!-- Original Modal (kept for compatibility) -->
       <div
         class="modal fade-scale"
         id="myModal"
@@ -146,7 +294,7 @@
           <div class="modal-content">
             <div class="modal-body text-center">
               <img
-                src="https://demo.test.cloint.com/assets/images/spinner.gif"
+                src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
                 width="40"
                 style="margin: 60px auto"
                 alt="Loading..."
@@ -161,8 +309,7 @@
         <div class="container">
           <div class="text-center">
             <p>
-              &copy; 2025 Grocery Store Management System by
-              <strong>Adeel</strong>
+              © 2025 Grocery Store Management System by <strong>Adeel</strong>
             </p>
           </div>
         </div>
@@ -172,5 +319,77 @@
     <script src="js/packages/jquery.min.js"></script>
     <script src="js/custom/common.js"></script>
     <script src="js/custom/dashboard.js"></script>
+
+    <script>
+      // Database Loading System - Runs automatically on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        const loader = document.getElementById('databaseLoader');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressPercentage');
+        const statusText = document.getElementById('loadingStatus');
+        
+        let currentProgress = 0;
+        const totalTime = 6000; // 6 seconds (you can adjust this to 30-40 seconds)
+        const updateInterval = 200; // Update every 200ms
+        const totalSteps = totalTime / updateInterval;
+        const progressStep = 100 / totalSteps;
+        
+        // Loading stages with messages
+        const loadingStages = [
+          { progress: 10, message: 'Connecting to database' },
+          { progress: 25, message: 'Loading user authentication' },
+          { progress: 40, message: 'Fetching product catalog' },
+          { progress: 55, message: 'Loading order history' },
+          { progress: 70, message: 'Initializing inventory system' },
+          { progress: 85, message: 'Preparing dashboard data' },
+          { progress: 95, message: 'Finalizing system setup' },
+          { progress: 100, message: 'System ready!' }
+        ];
+        
+        let currentStageIndex = 0;
+        
+        function updateProgress() {
+          currentProgress += progressStep;
+          
+          // Ensure we don't exceed 100%
+          if (currentProgress > 100) {
+            currentProgress = 100;
+          }
+          
+          // Update progress bar and text
+          progressBar.style.width = currentProgress + '%';
+          progressText.textContent = Math.round(currentProgress) + '%';
+          
+          // Update status message based on progress
+          if (currentStageIndex < loadingStages.length) {
+            const currentStage = loadingStages[currentStageIndex];
+            if (currentProgress >= currentStage.progress) {
+              statusText.innerHTML = currentStage.message + '<span class="loading-dots"></span>';
+              currentStageIndex++;
+            }
+          }
+          
+          // Continue updating until 100%
+          if (currentProgress < 100) {
+            setTimeout(updateProgress, updateInterval);
+          } else {
+            // Loading complete - hide loader after a brief delay
+            setTimeout(function() {
+              statusText.textContent = 'Loading complete! Welcome to GSMS';
+              setTimeout(function() {
+                loader.classList.add('hide');
+                // Remove the loader from DOM after transition
+                setTimeout(function() {
+                  loader.remove();
+                }, 500);
+              }, 1000);
+            }, 500);
+          }
+        }
+        
+        // Start the loading process
+        updateProgress();
+      });
+    </script>
   </body>
 </html>
