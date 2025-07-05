@@ -10,12 +10,12 @@ import uom_pao
 
 app = Flask(__name__)
 CORS(app, resources={
-    r"/getUOM": {"origins": ["https://gsms-adeeldevs-projects-f7c6df64.vercel.app", "https://gsms-adeeldevs-projects-f7c6df64.vercel.app/", "http://localhost:8000"]},
-    r"/getProducts": {"origins": ["https://gsms-adeeldevs-projects-f7c6df64.vercel.app", "https://gsms-adeeldevs-projects-f7c6df64.vercel.app/", "http://localhost:8000"]},
-    r"/insertProduct": {"origins": ["https://gsms-adeeldevs-projects-f7c6df64.vercel.app", "https://gsms-adeeldevs-projects-f7c6df64.vercel.app/", "http://localhost:8000"]},
-    r"/getAllOrders": {"origins": ["https://gsms-adeeldevs-projects-f7c6df64.vercel.app", "https://gsms-adeeldevs-projects-f7c6df64.vercel.app/", "http://localhost:8000"]},
-    r"/insertOrder": {"origins": ["https://gsms-adeeldevs-projects-f7c6df64.vercel.app", "https://gsms-adeeldevs-projects-f7c6df64.vercel.app/", "http://localhost:8000"]},
-    r"/deleteProduct": {"origins": ["https://gsms-adeeldevs-projects-f7c6df64.vercel.app", "https://gsms-adeeldevs-projects-f7c6df64.vercel.app/", "http://localhost:8000"]}
+    r"/getUOM": {"origins": ["https://gsms-adeeldevs-projects-f7c6df64.vercel.app", "https://gsms-adeeldevs-projects-f7c6df64.vercel.app/"]},
+    r"/getProducts": {"origins": ["https://gsms-adeeldevs-projects-f7c6df64.vercel.app", "https://gsms-adeeldevs-projects-f7c6df64.vercel.app/"]},
+    r"/insertProduct": {"origins": ["https://gsms-adeeldevs-projects-f7c6df64.vercel.app", "https://gsms-adeeldevs-projects-f7c6df64.vercel.app/"]},
+    r"/getAllOrders": {"origins": ["https://gsms-adeeldevs-projects-f7c6df64.vercel.app", "https://gsms-adeeldevs-projects-f7c6df64.vercel.app/"]},
+    r"/insertOrder": {"origins": ["https://gsms-adeeldevs-projects-f7c6df64.vercel.app", "https://gsms-adeeldevs-projects-f7c6df64.vercel.app/"]},
+    r"/deleteProduct": {"origins": ["https://gsms-adeeldevs-projects-f7c6df64.vercel.app", "https://gsms-adeeldevs-projects-f7c6df64.vercel.app/"]}
 })
 
 def get_db_connection():
