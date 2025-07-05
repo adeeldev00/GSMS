@@ -58,6 +58,7 @@ $("#saveOrder").on("click", function(){
                 requestPayload.customer_name = element.value;
                 break;
             case 'product_grand_total':
+                requestPayload.total = element.value;
                 requestPayload.grand_total = element.value;
                 break;
             case 'product':
